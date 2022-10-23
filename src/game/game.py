@@ -17,7 +17,7 @@ from typing import Iterable
 from abc import ABC, abstractmethod
 
 from src.game.phrase import SecretPhrase
-from src.game.wheel import Wheel
+from src.game.wheel import Wheel, Wedge
 from src.player.abstract_player import Player
 
 
@@ -104,6 +104,11 @@ class AbstractGame(ABC):
     def set_next_player(self):
         """Abstraktní metoda, která nastaví dalšího hráče v pořadí jako
         aktuálního hráče."""
+
+    def turn_the_wheel(self) -> Wedge:
+        """Metoda, která řídí otočení kolem pro daný tah. Výsledný výherní
+        klín je vrácen jako návratová hodnota."""
+        return self.wheel.rotate()
 
     def turn(self):
         """"""
