@@ -1,4 +1,6 @@
-""""""
+"""Initor balíčku, který obsahuje základní přístupové metody pro výchozí
+hodnoty."""
+
 from src.game.wheel import Wedge, Wheel
 
 
