@@ -1,7 +1,7 @@
 """Tento modul obsahuje prostředky pro práci s tajenkou.
 
 Obsahuje především definici třídy `SecretPhrase`, která má za cíl poskytovat
-službu správy tajenky. Ta se sestává ze znaků, která mají být uhodnuta.
+službu správy tajenky. Ta se sestává ze znaků, které mají být uhodnuty.
 
 Těmito znaky jsou instance třídy `Letter`, která obsalují jednotlivá písmena
 tajenky a udržují si informaci o tom, zda-li byly již uhodnuty či třeba zda-li
