@@ -155,9 +155,19 @@ class SecretPhrase:
         return tuple(filter(lambda ltr: ltr.is_revealed, self.__letters))
 
     @property
+    def hidden_characters(self) -> tuple[Letter]:
+        """Všechny doposud neodkryté znaky."""
+        return tuple(filter(lambda ltr: not ltr.is_revealed, self.__letters))
+
+    @property
     def special_characters(self) -> tuple[Letter]:
         """Všechny speciální znaky tajenky."""
         return tuple(filter(lambda ltr: ltr.is_special, self.__letters))
+
+    @property
+    def is_finished(self) -> bool:
+        """Je-li tajenka rozluštěna, tedy není-li žádný znak skrytý."""
+        return len(self.hidden_characters) == 0
 
     def guess(self, letter: str) -> int:
         """Funkce, která vrací počet nalezených výskytů daného písmene v
