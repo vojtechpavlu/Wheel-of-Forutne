@@ -29,4 +29,19 @@ def default_wheel() -> Wheel:
             create_wedge(900), create_wedge(300), create_wedge(700),
 
             # Dva klíny bankrotu
-            create_bankrupt_wedge(), create_bankrupt_wedge(),])
+            create_bankrupt_wedge(), create_bankrupt_wedge()])
+
+
+def wheel_without_bankrupts() -> Wheel:
+    """Funkce vrací výchozí stavbu kola, které obsahuje základní výherní klíny.
+    """
+    return Wheel([
+            # 21 výherních klínů
+            create_wedge(800), create_wedge(500), create_wedge(650),
+            create_wedge(500), create_wedge(500), create_wedge(900),
+            create_wedge(700), create_wedge(600), create_wedge(800),
+            create_wedge(500), create_wedge(700), create_wedge(500),
+            create_wedge(600), create_wedge(550), create_wedge(500),
+            create_wedge(900), create_wedge(650), create_wedge(900),
+            create_wedge(900), create_wedge(300), create_wedge(700)
+    ])

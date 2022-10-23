@@ -1,4 +1,8 @@
-""""""
+"""Tento modul obsahuje definici moderátora, coby nejvyšší řídící instituci
+v rámci této hry.
+
+Moderátor je odpovědný za řízení celé hry v kontextu dotazování se
+jednotlivých hráčů na jejich tipy, stejně jako na přiřazování pořadí."""
 
 from src.game import Wedge
 from src.game.game import AbstractGame
@@ -7,21 +11,26 @@ from src.player.abstract_player import AbstractPlayer
 
 
 class Moderator:
-    """"""
+    """Instance této třídy jsou řídícím elementem celého systému. Řídí hru
+    a celkově interagují s hráčem.
+    """
 
     def __init__(self, game: AbstractGame, quiet: bool = False):
-        """"""
+        """Initor, který přijímá instanci třídy `AbstractGame`, o kterou
+        se má za úkol starat. Dále volitelný parametr `quiet`, který umožňuje
+        moderátora 'umlčet', aby nevypisoval do konzole všechny repliky.
+        """
         self._game = game
         self._quiet = quiet
 
     @property
     def game(self) -> AbstractGame:
-        """"""
+        """Vrací referenci na hru, kterou tento moderátor řídí."""
         return self._game
 
     @property
     def quiet(self) -> bool:
-        """"""
+        """Vrací, zda-li by měl moderátor mlčet či vypisovat do konzole."""
         return self._quiet
 
     def say(self, *replicas):
@@ -39,16 +48,17 @@ class Moderator:
         self.say(f"Dnes zde hraje {len(self.game.players)} hráčů:")
         for player in self.game.players:
             self.say("\t- ", player.player_name)
-        self.say("Začněme tedy hádat tajenku!")
+        print(f"Začněme tedy hádat tajenku: {self.game.phrase}")
 
     def end_game(self):
         """Metoda, kterou se moderátor rozloučí s hráči a hru ukončí.
         """
+        print("Tajenka:", self.game.phrase)
         self.say("Konec hry. Dosažené skóre:")
 
         # Pro každého hráče vypiš dosažené skóre a pak poděkuj
         for p in self.game.players:
-            self.say(f"\t{p.player_name}: {self.game.players_score(p)} bodů")
+            print(f"\t{p.player_name}: {self.game.players_score(p)} bodů")
         self.say("Děkujeme, že jste si zahráli a příště naviděnou!")
 
     def ask_for_letter(self, player: AbstractPlayer) -> str:
@@ -129,6 +139,7 @@ class Moderator:
         v opačném případě hraje další hráč v pořadí.
         """
         player = self.game.current_player
+        self.say(f"Na tahu je hráč '{player.player_name}'.")
         wedge = self.turn_wheel()
 
         # Pokud padne políčko bankrot
@@ -155,7 +166,7 @@ class Moderator:
 
         # Dokud není tajenka vyluštěna
         while not self.game.phrase.is_finished:
-            print(80*"-")
+            self.say(80*"-")
             self.do_the_turn()
 
         # Ukonči hru
