@@ -129,7 +129,7 @@ class MultiplayerGame(AbstractGame):
     @property
     def current_player(self) -> AbstractPlayer:
         """Aktuální hráč, který je právě na tahu."""
-        return self.players[self.__current_player_idx][0]
+        return self.players[self.__current_player_idx]
 
     def set_next_player(self):
         """Metoda, která se postará o nastavení dalšího hráče na tahu.
