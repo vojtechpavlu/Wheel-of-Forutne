@@ -115,9 +115,16 @@ class AbstractGame(ABC):
             self.bankrupt_player(player)
         else:
             # Zvyš skóre hráče o výhru násobenou výskyty písmene v tajence
-            guessed_letter = player.guess_letter(self)
+            guessed_letter = player.guess_letter(
+                self.guessed_letters, self.phrase.current_phrase)
+
+            # Počet uhodnutých výskytů hádaného písmene v hádance
             occurrences = self.phrase.guess(guessed_letter)
+
+            # Zvýšení skóre hráče
             self.increase_player_score(player, wedge.multiplier * occurrences)
+
+        # Nastavení dalšího hráče
         self.set_next_player()
 
 

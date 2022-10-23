@@ -4,8 +4,7 @@ poskytování společné definice protokolu."""
 
 
 from abc import ABC, abstractmethod
-
-from src.game.game import AbstractGame
+from typing import Iterable
 
 
 class Player(ABC):
@@ -23,12 +22,13 @@ class Player(ABC):
         return self._player_name
 
     @abstractmethod
-    def guess_letter(self, game: AbstractGame) -> str:
+    def guess_letter(self, already_guessed: Iterable[str], phrase: str) -> str:
         """Abstraktní metoda, která definuje požadovanou signaturu pro každého
         hráče. Implementace této metody je odpovědná za pokus o uhodnutí
         dalšího písmene v tajence.
 
-        K tomu dostává referenci na instanci hry, ze které se může dozvědět
-        například již použité znaky, nebo počet chybějících písmen."""
+        K tomu dostává seznam písmen, která již byla použita, a z části
+        skrytou tajenku, do které má za úkol další znak uhodnout.
+        """
 
 
