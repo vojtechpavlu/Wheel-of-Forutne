@@ -78,7 +78,7 @@ class Letter:
         než je právě jeden znak.
         """
         if len(letter) != 1:
-            raise ValueError(f"Povolen je právě jeden znak: '{letter}'!")
+            raise GuessError(f"Povolen je právě jeden znak: '{letter}'!")
 
         letter = self.process(letter)
 
@@ -175,7 +175,7 @@ class SecretPhrase:
         je vyhozena výjimka.
         """
         if len(letter) != 1:
-            raise ValueError(f"Povolen je právě jeden znak: '{letter}'!")
+            raise GuessError(f"Povolen je právě jeden znak: '{letter}'!")
 
         return len([ltr for ltr in self.__letters if ltr.guess(letter)])
 
@@ -192,3 +192,20 @@ def remove_accents(string_with_accents: str) -> str:
         unicodedata.normalize("NFD", string_with_accents)
         .encode("ascii", "ignore")
         .decode("utf-8"))
+
+
+class GuessError(Exception):
+    """Výjimka značící, že došlo k chybě při pokusu o uhodnutí dalšího písmene.
+    Výjimky tohto typu mají možnost uchovat znak, v němž došlo k chybě tak,
+    aby bylo tento možné dále reprodukovat."""
+
+    def __init__(self, message: str, problem_letter: str = ""):
+        """Initor, který přijímá zprávu o problému, která je postoupena svému
+        předkovi, a problematickou frázi."""
+        super().__init__(message)
+        self._problem_letter = problem_letter
+
+    @property
+    def problem_letter(self) -> str:
+        """Problematický dodaný řetězec jako pokus o uhodnutí."""
+        return self._problem_letter
