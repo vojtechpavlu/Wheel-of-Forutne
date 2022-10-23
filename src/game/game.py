@@ -72,7 +72,36 @@ class AbstractGame(ABC):
         self.set_next_player()
 
 
+class MultiplayerGame(AbstractGame):
+    """Instance hry, která je určena pro více hráčů."""
 
+    def __init__(self, phrase: str, wheel: Wheel, players: Iterable[Player]):
+        """"""
+        super().__init__(phrase, wheel, players)
+
+        if len(self.players) > 5:
+            raise ValueError(f"Počet hráčů < 2: {len(self.players)}")
+
+        # Index prvního hráče - ve výchozí pozici nastaveno na 0
+        self.__current_player_idx = 0
+
+    @property
+    def current_player(self) -> Player:
+        """Aktuální hráč, který je právě na tahu."""
+        return self.players[self.__current_player_idx]
+
+    def set_next_player(self):
+        """Metoda, která se postará o nastavení dalšího hráče na tahu.
+        Pokud je aktuální hráč posledním, kruhem se přesune tah opět na
+        toho prvního.
+        """
+        # Pokud je hráč posledním v řadě, další je opět první
+        if (self.number_of_players - 1) == self.__current_player_idx:
+            self.__current_player_idx = 0
+
+        # Jinak je nastaven aktuální hráč na dalšího v pořadí
+        else:
+            self.__current_player_idx += 1
 
 
 
