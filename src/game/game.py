@@ -1,4 +1,18 @@
-""""""
+"""Tento modul obsahuje definici hry.
+
+Jako hru lze chápat prostředek, pomocí kterého lze řídit průběh hry, co do
+řízení tahů hráčů, tak i co do stavu hry jako takové.
+
+Obecně lze chápat v kontextu tohoto typu hry dva základní módy:
+
+- Multiplayer mód, kde hraje více hráčů proti sobě
+- Singleplayer mód, kde hraje jediný hráč (hra pak odpovídá spíše hře
+  'Hangman', oběšenec).
+
+Oba tyto módy mají mnoho společných znaků, které jsou sdruženy do společného
+abstraktního předka `AbstractGame`.
+"""
+
 from typing import Iterable
 from abc import ABC, abstractmethod
 
@@ -8,14 +22,27 @@ from src.player.abstract_player import Player
 
 
 class AbstractGame(ABC):
-    """"""
+    """Abstraktní typ hry, který sdružuje společnou funkcionalitu obou módů
+    hry (SinglePlayer a MultiPlayer).
+
+    Instance této třídy jsou odpovědné za sdružování prostředků pro hru
+    (kolo štěstí, tajneku a hráče) a poskytuje protokol pro řízení průběhu
+    celé hry.
+    """
 
     def __init__(self, phrase: str, wheel: Wheel, players: Iterable[Player]):
-        """"""
+        """Initor, který přijímá tajenku (v prostém textovém řetězci),
+        vybudované kolo štěstí (pomocí kterého lze určovat ceny za uhodnutý
+        znak tajenky) a sadu hráčů (kteří mohou tuto hru hrát a jsou dotazováni
+        během svého tahu na svůj pokus o uhodnutí dalšího písmene hádanky).
+        """
         self._wheel = wheel
         self._phrase = SecretPhrase(phrase)
-        self._players = list(players)
         self.__guessed_letters: list[str] = []
+
+        # Pro každého hráče ulož hráče jako n-tici (hráč, skóre),
+        # přičemž skóre je na počátku pochopitelně 0
+        self._player_records = [(p, 0) for p in players]
 
     @property
     def wheel(self) -> Wheel:
@@ -25,7 +52,7 @@ class AbstractGame(ABC):
     @property
     def players(self) -> tuple[Player]:
         """N-tice hráčů, kteří se této hry účastní."""
-        return tuple(self._players)
+        return tuple([p[0] for p in self._player_records])
 
     @property
     def number_of_players(self) -> int:
@@ -51,6 +78,28 @@ class AbstractGame(ABC):
         """Metoda, která uloží další pokus o uhodnutí znaku."""
         self.__guessed_letters.append(guessed_letter)
 
+    def players_score(self, player: Player) -> int:
+        """Metoda, která vrací skóre daného hráče."""
+        for player_record in self._player_records:
+            if player_record[0] == player:
+                return player_record[1]
+        raise Exception(f"Ve hře není hráč '{player}'")
+
+    def set_player_score(self, player: Player, score: int):
+        """Metoda, která nastavuje skóre daného hráče."""
+        for index, player_record in enumerate(self._player_records):
+            if player_record[0] == player:
+                self._player_records[index] = (player, score)
+        raise Exception(f"Ve hře není hráč '{player}'")
+
+    def bankrupt_player(self, player: Player):
+        """Metoda, která anuluje hráčovo skóre."""
+        self.set_player_score(player, 0)
+
+    def increase_player_score(self, player: Player, increment: int):
+        """Metoda zvyšuje skóre daného hráče o dodaný přírustek."""
+        self.set_player_score(player, self.players_score(player) + increment)
+
     @abstractmethod
     def set_next_player(self):
         """Abstraktní metoda, která nastaví dalšího hráče v pořadí jako
@@ -63,12 +112,12 @@ class AbstractGame(ABC):
 
         # Pokud je políčko BANKROT, vynuluj hráči jeho skóre
         if wedge.is_bankrupt:
-            player.score = 0
+            self.bankrupt_player(player)
         else:
             # Zvyš skóre hráče o výhru násobenou výskyty písmene v tajence
             guessed_letter = player.guess_letter(self)
             occurrences = self.phrase.guess(guessed_letter)
-            player.score += wedge.multiplier * occurrences
+            self.increase_player_score(player, wedge.multiplier * occurrences)
         self.set_next_player()
 
 
@@ -88,7 +137,7 @@ class MultiplayerGame(AbstractGame):
     @property
     def current_player(self) -> Player:
         """Aktuální hráč, který je právě na tahu."""
-        return self.players[self.__current_player_idx]
+        return self.players[self.__current_player_idx][0]
 
     def set_next_player(self):
         """Metoda, která se postará o nastavení dalšího hráče na tahu.
@@ -115,7 +164,7 @@ class SinglePlayerGame(AbstractGame):
     def current_player(self) -> Player:
         """Aktuální hráč, který je právě na tahu. V případě hry pro jediného
         hráče pouze vrací právě toho."""
-        return self.players[0]
+        return self.players[0][0]
 
     def set_next_player(self):
         """Pro hru jediného hráče je tato metoda redundantní."""
