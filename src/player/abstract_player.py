@@ -12,24 +12,14 @@ class AbstractPlayer(ABC):
     funkcionalitu a poskytuje společný zastřešující protokol pro všechny
     své potomky."""
 
-    __COUNTER = 0
-
     def __init__(self, player_name: str):
         """Initor, který přijímá pouze jméno daného hráče."""
         self._player_name = player_name
-        self.__COUNTER += 1
-        self.__player_id = self.__COUNTER
 
     @property
     def player_name(self) -> str:
         """Jméno hráče."""
         return self._player_name
-
-    def __eq__(self, other: "AbstractPlayer"):
-        """Metoda, která umožňuje porovnávat hráče."""
-        if isinstance(other, AbstractPlayer):
-            return other.__player_id == self.__player_id
-        return False
 
     def __repr__(self):
         return self.player_name
