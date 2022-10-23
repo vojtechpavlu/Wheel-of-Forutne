@@ -110,28 +110,6 @@ class AbstractGame(ABC):
         klín je vrácen jako návratová hodnota."""
         return self.wheel.rotate()
 
-    def turn(self):
-        """"""
-        wedge = self.wheel.rotate()
-        player = self.current_player
-
-        # Pokud je políčko BANKROT, vynuluj hráči jeho skóre
-        if wedge.is_bankrupt:
-            self.bankrupt_player(player)
-        else:
-            # Zvyš skóre hráče o výhru násobenou výskyty písmene v tajence
-            guessed_letter = player.guess_letter(
-                self.guessed_letters, self.phrase.current_phrase)
-
-            # Počet uhodnutých výskytů hádaného písmene v hádance
-            occurrences = self.phrase.guess(guessed_letter)
-
-            # Zvýšení skóre hráče
-            self.increase_player_score(player, wedge.multiplier * occurrences)
-
-        # Nastavení dalšího hráče
-        self.set_next_player()
-
 
 class MultiplayerGame(AbstractGame):
     """Instance hry, která je určena pro více hráčů."""
