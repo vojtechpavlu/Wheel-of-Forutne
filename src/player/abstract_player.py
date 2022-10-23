@@ -16,22 +16,11 @@ class Player(ABC):
     def __init__(self, player_name: str):
         """Initor, který přijímá pouze jméno daného hráče."""
         self._player_name = player_name
-        self._score = 0
 
     @property
     def player_name(self) -> str:
         """Jméno hráče."""
         return self._player_name
-
-    @property
-    def score(self) -> int:
-        """Skóre tohoto hráče."""
-        return self._score
-
-    @score.setter
-    def score(self, new_score: int):
-        """Nastavuje skóre hráče."""
-        self._score = new_score
 
     @abstractmethod
     def guess_letter(self, game: AbstractGame) -> str:
