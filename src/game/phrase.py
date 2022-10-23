@@ -179,6 +179,10 @@ class SecretPhrase:
 
         return len([ltr for ltr in self.__letters if ltr.guess(letter)])
 
+    def __repr__(self):
+        """Vrací textovou reprezentaci akutální podoby tajenky."""
+        return self.current_phrase
+
 
 def remove_accents(string_with_accents: str) -> str:
     """Funkce odpovědná za odstranění diakritiky. Díky tomu je možné odhalovat
