@@ -104,4 +104,20 @@ class MultiplayerGame(AbstractGame):
             self.__current_player_idx += 1
 
 
+class SinglePlayerGame(AbstractGame):
+    """Instance hry, která je určena pro jediného hráče."""
+
+    def __init__(self, phrase: str, wheel: Wheel, player: Player):
+        """"""
+        super().__init__(phrase, wheel, [player])
+
+    @property
+    def current_player(self) -> Player:
+        """Aktuální hráč, který je právě na tahu. V případě hry pro jediného
+        hráče pouze vrací právě toho."""
+        return self.players[0]
+
+    def set_next_player(self):
+        """Pro hru jediného hráče je tato metoda redundantní."""
+        ...
 
